@@ -15,32 +15,52 @@ function TodoItem(props) {
         textDecoration: "line-through"
     };
 
-    function changeState(id) {
-        setState(prevState => {
-            const updatedTodos = prevState.todos.map(todo => {
-                if (todo.id === id) {
-                    todo.completed = !todo.completed
-                }
-                return todo
-            })
-            return {
-                todos: updatedTodos
+    function handleCheckbox(id) {
+        const updatedTodos = state.todos.map(todo => {
+            // debugger;
+            if (todo.id === id) {
+                todo.completed = !todo.completed
             }
+            return todo
         })
-        console.log('From TodoItem => State',state);
+        setState({
+            todos: updatedTodos
+        }
+        );
+        console.log('From Checkbox Func => State',state);
         props.handleChange(state);
     }
 
-    return (
-        <div className="todo-item">
+    function handleDelete(id) {
+        // console.log('Need to delete ', id);
+        // debugger;
+        let todox = state.todos;
+        todox.splice(id - 1, 1);
+        todox.forEach(todo => {
+            if (todo.id > id) {
+                todo.id = todo.id - 1;
+            }
+        });
+        setState({
+            todos: todox
+        });
+        props.handleChange({
+            todos: todox
+        });
+        // console.log(state);
+        console.log('From Delete Func => State',state);
+    }
+
+    return(
+        <div className = "todo-item" >
             <input
                 type="checkbox"
                 checked={props.item.completed}
-                onChange={() => changeState(props.item.id)}
+                onChange={() => handleCheckbox(props.item.id)}
             />
             <p style={props.item.completed ? completedStyle : null} >{props.item.text}</p>
             <span>
-                <IconButton>
+                <IconButton onClick={() => handleDelete(props.item.id)}>
                     <DeleteIcon fontSize="small" />
                 </IconButton>
             </span>
